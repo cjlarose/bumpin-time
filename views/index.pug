@@ -1,5 +1,6 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1= "Bumpin’ Time"
+  form(action='/wake_requests' method='POST')
+    input(type='submit' value='Let’s bumpin')
