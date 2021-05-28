@@ -3,6 +3,7 @@ var wol = require('wake_on_lan');
 var router = express.Router();
 
 var mac = process.env.WOL_MAC;
+var address = process.env.WOL_ADDRESS;
 
 router.post('/', function(req, res, next) {
   if (!mac) {
@@ -10,7 +11,8 @@ router.post('/', function(req, res, next) {
     res.send('No MAC configured');
     return;
   }
-  wol.wake(mac);
+  const options = { address };
+  wol.wake(mac, options);
   res.send('up!');
 });
 
