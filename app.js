@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var basicAuth = require('express-basic-auth');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -10,11 +11,22 @@ var wakeRequestsRouter = require('./routes/wake_requests');
 
 var app = express();
 
+var expectedPassword = process.env.PASSWORD;
+if (!expectedPassword) {
+  console.error('Missing PASSWORD');
+  process.exit(1);
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
+app.use(basicAuth({
+  authorizer: (_, password) => basicAuth.safeCompare(password, expectedPassword),
+  challenge: true,
+  realm: 'bumpin-time',
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
