@@ -1,8 +1,10 @@
 var express = require('express');
+const checkCookie = require('../cookie_based_authentication');
+
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', checkCookie, function(req, res, next) {
   res.render('index');
 });
 

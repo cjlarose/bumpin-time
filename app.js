@@ -3,35 +3,31 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var basicAuth = require('express-basic-auth');
 
 var indexRouter = require('./routes/index');
+var loginRouter = require('./routes/login');
 var wakeRequestsRouter = require('./routes/wake_requests');
 
-var app = express();
-
-var expectedPassword = process.env.PASSWORD;
-if (!expectedPassword) {
-  console.error('Missing PASSWORD');
+var cookieSecret = process.env.COOKIE_SECRET;
+if (!cookieSecret) {
+  console.error('Missing COOKIE_SECRET');
   process.exit(1);
 }
+
+var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use(logger('dev'));
-app.use(basicAuth({
-  authorizer: (_, password) => basicAuth.safeCompare(password, expectedPassword),
-  challenge: true,
-  realm: 'bumpin-time',
-}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(cookieSecret));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/login', loginRouter);
 app.use('/wake_requests', wakeRequestsRouter);
 
 // catch 404 and forward to error handler
