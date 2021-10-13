@@ -15,7 +15,9 @@ router.post('/', checkCookie, function(req, res, next) {
   }
   const options = { address };
   wol.wake(mac, options);
-  res.send('up!');
+
+  res.cookie('wokeMac', mac, { signed: true });
+  res.redirect('/');
 });
 
 module.exports = router;

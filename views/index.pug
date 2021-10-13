@@ -2,5 +2,7 @@ extends layout
 
 block content
   h1= "Bumpin’ Time"
+  if wokeMac
+    p Woke MAC #{wokeMac}!
   form(action='/wake_requests' method='POST')
     input(type='submit' value='Let’s bumpin')

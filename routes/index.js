@@ -5,7 +5,13 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', checkCookie, function(req, res, next) {
-  res.render('index');
+  var wokeMac = req.signedCookies.wokeMac;
+  if (wokeMac) {
+    res.clearCookie('wokeMac');
+    res.render('index', { wokeMac });
+  } else {
+    res.render('index');
+  }
 });
 
 module.exports = router;
